@@ -1,0 +1,521 @@
+Adamovich_BRCA1_Cisplatin:
+  curation_name: Adamovich et al BRCA1 (Multiplex HDR assay)
+  filepath: /data/dzeiberg/mave_calibration/publications/Adamovich_BRCA1/mmc2.xlsx
+  extension: xlsx
+  sheet_name: Supp. Table S3
+  score_columns:
+    - FS1_BRCA1_siRNA
+    - FS2_BRCA1_siRNA
+    - FS3_BRCA1_siRNA
+    - FS4_BRCA1_siRNA
+  amino_acid_substitution_column: variantID
+  amino_acid_substitution_format: single_letter
+  pipeline: A
+  uniprot_acc: P38398
+
+Adamovich_BRCA1_HDR:
+  curation_name: Adamovich et al BRCA1 (Cisplatin resistance assay)
+  filepath: /data/dzeiberg/mave_calibration/publications/Adamovich_BRCA1/mmc2.xlsx
+  extension: xlsx
+  sheet_name: Supp. Table S2
+  score_columns:
+    - FS1_BRCA1_siRNA
+    - FS2_BRCA1_siRNA
+    - FS3_BRCA1_siRNA
+    - FS4_BRCA1_siRNA
+  amino_acid_substitution_column: variantID
+  amino_acid_substitution_format: single_letter
+  pipeline: A
+  uniprot_acc: P38398
+
+Findlay_BRCA1_SGE:
+  curation_name: Findlay et al BRCA1 SGE
+  filepath: /data/dzeiberg/mave_calibration/data/Findlay_BRCA1_SGE/raw/urn_mavedb_00000097-0-1_scores.csv
+  extension: csv
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro_with_transcript
+  nucleotide_substitution_column: hgvs_splice
+  nucleotide_substitution_format: hgvs_nuc_with_transcript
+  score_columns:
+    - score_rep1
+    - score_rep2
+  pipeline: B
+  uniprot_acc: P38398
+
+Hu_BRCA2_HDR:
+  curation_name: BRCA2 Hu et al. 2024
+  filepath: /data/dzeiberg/mave_calibration/data/Hu_BRCA2_HDR/raw/1-s2.0-S000292972400034X-mmc2.xlsx
+  extension: xlsx
+  header_row: 1
+  amino_acid_substitution_column: protein change
+  amino_acid_substitution_format: hgvs_pro
+  nucleotide_substitution_column: coding nucleotide change
+  nucleotide_substitution_format: hgvs_nuc
+  score_columns:
+    - HDR score
+  pipeline: B
+  uniprot_acc: P51587
+  
+
+Jia_MSH2_SSM:
+  curation_name: Jia et al MSH2 SSM
+  filepath: /data/dzeiberg/mave_calibration/data/Jia_MSH2_SSM/raw/urn_mavedb_00000050-a-1_scores.csv
+  extension: csv
+  score_columns:
+    - score
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  pipeline: A
+  uniprot_acc: P43246
+  inverted: True
+
+Kato_TP53:
+  curation_name: Kato TP53
+  filepath: /data/dzeiberg/mave_calibration/data/Kato_TP53_AIP1nWT/raw/FunctionIshiokaDownload_r20.csv
+  extension: csv
+  note: median of 8 assays
+  pipeline: A
+  amino_acid_substitution_column: AAchange
+  amino_acid_substitution_format: single_letter
+  score_columns:
+    - WAF1nWT
+    - MDM2nWT
+    - BAXnWT
+    - h1433snWT
+    - AIP1nWT
+    - GADD45nWT
+    - NOXAnWT
+    - P53R2nWT
+  score_agg_method: median
+  pipeline: A
+  score_threshold_source: Fortuno TP53 VCEP meta (Kato)
+  postprocess_scores:
+    - "normalize_B/LB"
+  author_transcript: NM_000546
+  uniprot_acc: P04637
+
+Giacomelli_1:
+  curation_name: Giacomelli 1 (p53 WT Nutlin-3)
+  filepath: /data/dzeiberg/mave_calibration/data/Giacomelli_p53_wtNutlin3/raw/urn_mavedb_00000068-a-1_scores.csv
+  extension: csv
+  score_columns:
+    - score
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  pipeline: A
+  uniprot_acc: P04637
+  author_transcript: NM_000546
+  note: using transcript from Fayer et al. 2021 as I cannot find the transcript used in the original publication
+  inverted: True
+
+Giacomelli_2:
+  curation_name: Giacomelli 2 (p53 null Nutlin-3)
+  filepath: /data/dzeiberg/mave_calibration/data/Giacomelli_p53_nullNutlin3/raw/urn_mavedb_00000068-b-1_scores.csv
+  extension: csv
+  score_columns:
+    - score
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  pipeline: A
+  uniprot_acc: P04637
+  author_transcript: NM_000546
+  note: using transcript from Fayer et al. 2021 as I cannot find the transcript used in the original publication
+  inverted: True
+
+Giacomelli_3:
+  curation_name: Giacomelli 3 (p53 null etoposide)
+  filepath: /data/dzeiberg/mave_calibration/data/Giacomelli_p53_nullEtoposide/raw/urn_mavedb_00000068-c-1_scores.csv
+  extension: csv
+  score_columns:
+    - score
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  pipeline: A
+  uniprot_acc: P04637
+  author_transcript: NM_000546
+  note: using transcript from Fayer et al. 2021 as I cannot find the transcript used in the original publication
+
+Giacomelli_4:
+  curation_name: Giacomelli 4 (combined phenotype score)
+  filepaths:
+    - /data/dzeiberg/mave_calibration/data/Giacomelli_p53_wtNutlin3/raw/urn_mavedb_00000068-a-1_scores.csv
+    - /data/dzeiberg/mave_calibration/data/Giacomelli_p53_nullNutlin3/raw/urn_mavedb_00000068-b-1_scores.csv
+    - /data/dzeiberg/mave_calibration/data/Giacomelli_p53_nullEtoposide/raw/urn_mavedb_00000068-c-1_scores.csv
+  extensions:
+    - csv
+    - csv
+    - csv
+  note: "will need to go in, please calculate Z-score as: (Z-score(p53WT + nutlin) + Z-score(p53NULL + nutlin) − Z-score(p53NULL + etoposide))/3"
+  uniprot_acc: P04637
+
+# Fayer_TP53:
+#   curation_name: Fayer et al. TP53 (NB-classifier predictions)
+#   filepath: /data/dzeiberg/mave_calibration/publications/Fayer_TP53/mmc2.xlsx
+#   extension: xlsx
+#   sheet_name: Table_S4
+#   amino_acid_substitution_column: Variant
+#   amino_acid_substitution_format: "p.single_letter"
+#   score_columns:
+#     - Classifier_prob_func_abnormal
+#   classification_column: Classifier_prediction
+#   classes: [Functionally abnormal, Functionally normal]
+#   header_row: 1
+#   author_label_column: Classifier_prediction
+#   uniprot_acc: P04637
+#   pipeline: A
+#   postprocess_scores:
+#     - logit
+
+Mighell_PTEN:
+  curation_name: Mighell et al PTEN (phosphatase)
+  filepath: /data/dzeiberg/mave_calibration/publications/Mighell_PTEN/mmc2.xlsx
+  extension: xlsx
+  sheet_name: Table S2
+  header_row: 1
+  amino_acid_substitution_column: Variant (one letter)
+  amino_acid_substitution_format: single_letter
+  score_columns:
+    - A1_score
+    - A2_score
+    - A3_score
+    - B1_score
+    - B2_score
+    - B3_score
+  pipeline: A
+  uniprot_acc: P60484
+
+
+Matreyek_PTEN_VampSeq:
+  curation_name: Matreyek et al PTEN (VAMPseq)
+  filepath: /data/dzeiberg/mave_calibration/data/Matreyek_PTEN_VampSeq/raw/urn_mavedb_00000013-a-1_scores.csv
+  extension: csv
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score1
+    - score2
+    - score3
+    - score4
+    - score5
+    - score6
+    - score7
+    - score8
+  author_transcript: NM_000314.8
+  note: 'using MANE-select transcript as none listed on curation'
+  pipeline: A
+  uniprot_acc: P60484
+
+Glazer_SCN5A:
+  curation_name: Glazer et al SCN5A Jan 2020
+  filepath: /data/dzeiberg/mave_calibration/publications/Glazer_SCN5A/002786_supplemental_file s1.xlsx
+  extension: xlsx
+  score_column: dms
+  classification_column: "class"
+  amino_acid_substitution_column: mutation
+  amino_acid_substitution_format: single_letter
+  score_columns:
+    - dms
+  pipeline: A
+  author_transcript: NM_198056
+  uniprot_acc: Q14524
+  postprocess_scores:
+    - normalize_synonymous
+  
+
+Buckley_VHL_SGE:
+  curation_name: Buckley et al VHL SGE
+  filepath: /data/dzeiberg/mave_calibration/publications/Buckley_VHL/41588_2024_1800_MOESM4_ESM.xlsx
+  extension: xlsx
+  classification_column: function_class
+  score_column: function_score_final
+  sheet_name: ST1
+  header_row: 2
+  amino_acid_substitution_column: pHGVS
+  amino_acid_substitution_format: p.single_letter
+  nucleotide_substitution_column: cHGVS
+  nucleotide_substitution_format: hgvs_nuc
+  classification_column: function_class
+  pos_col: hg38_pos
+  ref_col: ref
+  alt_col: alt
+  CHROM: 3
+  score_columns:
+    - function_score_final
+  pipeline: C
+  uniprot_acc: P40337
+  author_transcript: ENST00000256474.3
+
+BAP1_SGE:
+  curation_name: BAP1 SGE
+  filepath: /data/dzeiberg/mave_calibration/data/Waters_BAP1_SGE/extended_data_1_sge_bap1_dataset.xlsx
+  extension: xlsx
+  amino_acid_substitution_column: HGVSp
+  amino_acid_substitution_format: hgvs_pro_with_transcript
+  sheet_name: extended_data_1
+  header_row: 2
+  nucleotide_substitution_column: HGVSc
+  nucleotide_substitution_format: hgvs_nuc_with_transcript
+  classification_column: functional_classification
+  score_columns:
+    - functional_score
+  CHROM: 3
+  pos_col: pos
+  ref_col: ref
+  alt_col: alt
+  pipeline: C
+  uniprot_acc: Q92560
+
+Starita_BRCA1_HDR:
+  curation_name: Starita et al BRCA1 HDR
+  filepath: /data/dzeiberg/mave_calibration/data/Starita_BRCA1_HDR/raw/urn_mavedb_00000081-a-2_scores.csv
+  extension: csv
+  uniprot_acc: P38398
+  author_transcript: NM_007294
+  note: "using MANE-select transcript as none listed on curation"
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - brca1_sort1_score
+    - brca1_sort2_score
+    - brca1_sort3_score
+    - brca1_sort4_score
+  pipeline: A
+
+Boettcher_TP53:
+  curation_name: Boetcher TP53
+  filepath: /data/dzeiberg/mave_calibration/publications/Boettcher_TP53/TP53-MITEseq_collapsed_aa_fromIntendedCodons_inFraction_BoettcherSteffen.xlsx
+  extension: xlsx
+  uniprot_acc: P04637
+  header_row: 0
+  amino_acid_substitution_column: mut
+  amino_acid_substitution_format: single_letter
+  score_columns:
+    - SCORE
+  pipeline: A
+
+Erwood_BRCA2_HEK293T:
+  curation_name: "Erwood et al. BRCA2"
+  filepath: /data/dzeiberg/mave_calibration/data/Erwood_BRCA2_HEK293T/raw/41587_2021_1201_MOESM3_ESM.xlsx
+  extension: xlsx
+  sheet_name: Supplementary Table 3
+  header_row: 1
+  uniprot_acc: P51587
+  amino_acid_substitution_column: Protein Annotation
+  amino_acid_substitution_format: single_letter
+  classification_column: SPE Classification
+  score_columns:
+    - Function Score
+  author_transcript: NM_000059
+  nucleotide_substitution_format: Erwood_custom
+  nucleotide_substitution_column: N/A
+  CHROM: 13
+  pos_col: end
+  ref_col: reference_base
+  alt_col: alternate_base
+  pipeline: C
+
+
+Erwood_NPC1_HEK293T:
+  curation_name: Erwood et all NPC1 HEK239T
+  filepath: /data/dzeiberg/mave_calibration/data/Erwood_NPC1_HEK293T/raw/41587_2021_1201_MOESM3_ESM.xlsx
+  extension: xlsx
+  sheetname: Supplementary Table 1
+  header_row: 1
+  uniprot_acc: O15118
+  amino_acid_substitution_column: Protein Annotation
+  amino_acid_substitution_format: single_letter
+  classification_column: SPE Classification
+  score_columns:
+    - Function Score
+  author_transcript: NM_000271
+  nucleotide_substitution_format: Erwood_custom
+  nucleotide_substitution_column: N/A
+  CHROM: 18
+  pos_col: end
+  ref_col: reference_base
+  alt_col: alternate_base
+  pipeline: C
+
+Erwood_NPC1_RPE1:
+  filepath: /data/dzeiberg/mave_calibration/data/Erwood_NPC1_RPE1/raw/41587_2021_1201_MOESM3_ESM.xlsx
+  extension: xlsx
+  sheetname: Supplementary Table 2
+  header_row: 1
+  curation_name: Erwood et all NPC1 RPE1
+  uniprot_acc: O15118
+  amino_acid_substitution_column: Protein Annotation
+  amino_acid_substitution_format: single_letter
+  classification_column: SPE Classification
+  score_columns:
+    - Function Score
+  author_transcript: NM_000271
+  nucleotide_substitution_format: Erwood_custom
+  nucleotide_substitution_column: N/A
+  CHROM: 18
+  pos_col: end
+  ref_col: reference_base
+  alt_col: alternate_base
+  pipeline: C
+
+Weile_CALM:
+  filepath: /data/dzeiberg/mave_calibration/publications/Weile/CALM123/urn_mavedb_00000001-c-1_scores.csv
+  extension: csv
+  curation_name: CALM1/2/3 Yeast Complemtation
+  uniprot_accessions:
+    - P0DP23
+    - P0DP24
+    - P0DP25
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  nucleotide_substitution_column: hgvs_nt
+  nucleotide_substitution_format: hgvs_nuc
+  pipeline: A
+  author_transcript: NM_001363670
+  transcript_offset: 833
+  expecting_duplicates_in_scoreset: True
+  score_columns:
+    - score
+  HGNC_IDs:
+    - HGNC:1442
+    - HGNC:1445
+    - HGNC:1449
+
+Weile_TPK1:
+  filepath: /data/dzeiberg/mave_calibration/publications/Weile/TPK/urn_mavedb_00000001-d-1_scores.csv
+  extension: csv
+  curation_name: TPK1 Yeast Complemtation
+  uniprot_acc: Q9H3S4
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  nucleotide_substitution_column: hgvs_nt
+  nucleotide_substitution_format: hgvs_nuc
+  pipeline: B
+  author_transcript: NM_022445.3
+  transcript_offset: 104
+  score_columns:
+    - score
+
+Lo_OTC:
+  filepath: /data/dzeiberg/mave_calibration/publications/Lo_OTC/urn_mavedb_00000112-a-1_scores.csv
+  extension: csv
+  # curation_name: OTC
+  uniprot_acc: P00480
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score
+  pipeline: A
+
+RAD51C:
+  filepath: /data/dzeiberg/mave_calibration/publications/RAD51C/mmc1.xlsx
+  extension: xlsx
+  sheet_name: SGE functional classifications
+  header_row: 2
+  curation_name: Olvera-León et al RAD51C 2024
+  uniprot_acc: O43502
+  amino_acid_substitution_column: HGVSp
+  amino_acid_substitution_format: hgvs_pro_with_transcript
+  nucleotide_substitution_column: HGVSc
+  nucleotide_substitution_format: hgvs_nuc_with_transcript
+  classification_column: functional_classification
+  score_columns:
+    - z_score_D4_D14
+  pipeline: C
+  CHROM: 17
+  pos_col: pos
+  ref_col: ref
+  alt_col: alt
+  expecting_duplicates_in_scoreset: True
+
+Ollodart_MSH2:
+  filepath: /data/dzeiberg/mave_calibration/publications/Ollodart_MSH2/filtered.csv
+  extension: csv
+  curation_name: "Ollodart et. al. MSH2 2021 - barcoded"
+  uniprot_acc: P43246
+  amino_acid_substitution_column: Human Msh2 Genotypeb
+  amino_acid_substitution_format: single_letter
+  score_columns:
+    - Scoreg
+  pipeline: A
+  expecting_duplicates_in_scoreset: True
+
+vanLoggerenberg_HMBS:
+  filepath: /data/dzeiberg/mave_calibration/publications/vanLoggerenberg_HMBS/urn_mavedb_00000108-a-3_scores.csv
+  extension: csv
+  curation_name: "HMBS Loggerenberg et al. - combined isoforms"
+  uniprot_acc: P08397
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score
+  pipeline: A
+
+PRKN_VampSeq:
+  filepath: /data/dzeiberg/mave_calibration/publications/PRKN_VampSeq/urn_mavedb_00000114-a-1_scores.csv
+  extension: csv
+  curation_name: "Clausen et al Parkin 2024 VampSeq"
+  uniprot_acc: O60260
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score
+  pipeline: A
+
+Gray_AB42:
+  filepath: /data/dzeiberg/mave_calibration/publications/Gray_AB42/urn_mavedb_00000058-a-1_scores.csv
+  extension: csv
+  curation_name: "Gray et al amyloid beta 42 2019"
+  protein_offset: 670
+  uniprot_acc: P05067
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score
+  pipeline: A
+
+Seuma_AB42:
+  filepath: /data/dzeiberg/mave_calibration/publications/Seuma_AB42/urn_mavedb_00000113-a-3_scores.csv
+  extension: csv
+  curation_name: "Seuma et al amyloid beta 42 2021"
+  uniprot_acc: P05067
+  amino_acid_substitution_column: hgvs_pro
+  amino_acid_substitution_format: hgvs_pro
+  score_columns:
+    - score
+  pipeline: A
+
+# Radford_DDX3X:
+#   filepath: /data/dzeiberg/mave_calibration/publications/Radford_DDX3X/urn_mavedb_00000658-0-1_scores.csv
+#   extension: csv
+#   curation_name: "Radford et al  DDX3X - Random Forest classifier"
+#   uniprot_acc: O00571
+#   score_columns:
+#     - "Posterior_probability_variant_is_functionally_normal"
+  
+# Weile_SUMO1:
+#   filepath: /data/dzeiberg/mave_calibration/publications/Weile/SUMO1/urn_mavedb_00000001-b-2_scores.csv
+#   extension: csv
+#   uniprot_acc: P63165
+#   amino_acid_substitution_column: hgvs_pro
+#   amino_acid_substitution_format: hgvs_pro
+#   nucleotide_substitution_column: hgvs_nt
+#   nucleotide_substitution_format: hgvs_nuc
+#   pipeline: A
+#   author_transcript: NM_001005781
+#   transcript_offset: 149
+#   score_columns:
+#     - score
+
+# Weile_UBE2I:
+#   filepath: /data/dzeiberg/mave_calibration/publications/Weile/UBE2I/urn_mavedb_00000001-a-3.csv
+#   extension: csv
+#   uniprot_acc: P63279
+#   amino_acid_substitution_column: hgvs_pro
+#   amino_acid_substitution_format: hgvs_pro
+#   nucleotide_substitution_column: hgvs_nt
+#   nucleotide_substitution_format: hgvs_nuc
+#   pipeline: B
+#   author_transcript: NM_003345
+#   transcript_offset: 159
+#   score_columns:
+#     - score
