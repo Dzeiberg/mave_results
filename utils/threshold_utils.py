@@ -8,12 +8,12 @@ import numpy as np
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-def get_score_threshold(observations, results, control_sample_idx=1,parallel=True,return_all=False):
+def get_score_threshold(observation_range, results, control_sample_idx=1,return_all=False,point_values=range(1,9),**kwargs):
     """
     Get the score threshold for a given control sample index.
     
     Args:
-        observations (np.array): The observations to use for the threshold calculation.
+        observation_range (np.array): The observation_range to use for the threshold calculation.
         result (dict): The result dictionary from the fit method.
         control_sample_idx (int): The index of the control sample in the result dictionary.
         
@@ -27,32 +27,28 @@ def get_score_threshold(observations, results, control_sample_idx=1,parallel=Tru
     if np.sum(_isflipped) > len(results) / 2:
         is_inverted = True
     priors = np.array([prior_from_weights(np.array(result["weights"]), controls_idx=control_sample_idx,inverted=is_inverted) for result in results])
-    valid_priors = priors[np.isfinite(priors)]
-    if len(valid_priors) == 0:
-        logging.error("No valid priors found")
-        return np.ones(5) * np.nan, np.ones(5) * np.nan, priors, is_inverted
-    minprior = np.nanmin(valid_priors)
-    maxprior = np.nanmax(valid_priors)
-    priors[priors <= 0] = minprior
-    priors[priors >= 1] = maxprior
+    priors[np.isnan(priors)] = np.nanquantile(priors,.5)
+    assert np.isnan(priors).sum() == 0
 
     def do_res(result,prior):
-        log_lrPlus = get_log_lrPlus(observations, control_sample_idx, result)
+        log_lrPlus = get_log_lrPlus(observation_range, control_sample_idx, result)
         
         pathogenic_score_thresholds, benign_score_thresholds = calculate_score_thresholds(log_lrPlus,
                                                                                             prior, 
-                                                                                            observations,
+                                                                                            observation_range,
+                                                                                            point_values,
                                                                                             inverted=is_inverted)
-        return pathogenic_score_thresholds, benign_score_thresholds
-    if parallel:
+        return pathogenic_score_thresholds, benign_score_thresholds, log_lrPlus
+    if kwargs.get("parallel",True):
         Tau_results = Parallel(n_jobs=-1,verbose=100)(delayed(do_res)(result,prior) for result,prior in zip(results,priors))
     else:
         Tau_results = [do_res(result,prior) for result,prior in tqdm(zip(results,priors))]
-    Tau_P, Tau_B = zip(*Tau_results)
+    Tau_P, Tau_B,log_lrPlus_curves = zip(*Tau_results)
     P = np.stack(Tau_P)
     B = np.stack(Tau_B)
+    log_lrPlus = np.stack(log_lrPlus_curves)
     if return_all:
-        return P,B, priors,is_inverted, P,B
+        return P,B, priors,is_inverted, P,B,log_lrPlus
     # no more than ceiling(5%) of the bootstrap iterations can fail to meet the threshold
     maxFails = int(np.ceil(.05 * len(P)))
     meetsP = np.isnan(P).sum(0) < maxFails
@@ -67,11 +63,11 @@ def get_score_threshold(observations, results, control_sample_idx=1,parallel=Tru
     Pscores[~meetsP] = np.nan
     
     Bscores[~meetsB] = np.nan
-    return Pscores, Bscores, priors,is_inverted, P, B
+    return Pscores, Bscores, priors,is_inverted, P, B,log_lrPlus
 
-def calculate_score_thresholds(log_LR,prior,rng,inverted=False):
+def calculate_score_thresholds(log_LR,prior,rng,point_values,inverted=False):
     clipped_prior = np.clip(prior,.005,.55) # these seem to be the limits of the tavtigian constant
-    lr_thresholds_pathogenic , lr_thresholds_benign = thresholds_from_prior(prior=clipped_prior,point_values=[1,2,4,8])
+    lr_thresholds_pathogenic , lr_thresholds_benign = thresholds_from_prior(clipped_prior,point_values)
     log_lr_thresholds_pathogenic = np.log(lr_thresholds_pathogenic)
     log_lr_thresholds_benign = np.log(lr_thresholds_benign)
     pathogenic_score_thresholds = np.ones(len(log_lr_thresholds_pathogenic)) * np.nan
@@ -104,15 +100,16 @@ def get_log_lrPlus(X, control_sample_index, result, pathogenic_sample_num=0):
     return np.log(f_P) - np.log(f_B)
     
 
-def get_priors(results, control_sample_index,inverted=False):
-    priors = []
-    for result in results:
-        priors.append(prior_from_weights(np.array(result["weights"]),
-                                    controls_idx=control_sample_index,inverted=inverted))
-    priors = np.array(priors)
-    # fill in nans/infs with median
-    priors[np.isnan(priors) | np.isinf(priors)] = np.nanquantile(priors,.5)
-    return priors
+# def get_priors(results, control_sample_index,inverted=False):
+#     priors = []
+#     for result in results:
+#         priors.append(prior_from_weights(np.array(result["weights"]),
+#                                     controls_idx=control_sample_index,inverted=inverted))
+#     priors = np.array(priors)
+#     # fill in nans/infs with median
+#     priors[np.isnan(priors) | np.isinf(priors)] = np.nanquantile(priors,.5)
+#     assert np.isnan(priors).sum() == 0
+#     return priors
 
 def prior_from_weights(weights : np.ndarray, population_idx : int=2, controls_idx : int=1, pathogenic_idx : int=0, inverted: bool = False) -> float:
     """
@@ -144,14 +141,12 @@ def prior_from_weights(weights : np.ndarray, population_idx : int=2, controls_id
     else:
         w_idx = 0
     prior = ((weights[population_idx, w_idx] - weights[controls_idx, w_idx]) / (weights[pathogenic_idx, w_idx] - weights[controls_idx, w_idx])).item()
-    if prior < 0:
-        return -np.inf
-    if prior > 1:
-        return np.inf
+    if prior <= 0 or prior >= 1:
+        return np.nan
     return prior
 
 
-def thresholds_from_prior(prior, point_values=[1,2,3,4,8]) -> Tuple[List[float]]:
+def thresholds_from_prior(prior, point_values) -> Tuple[List[float]]:
     """
     Get the evidence thresholds (LR+ values) for each point value given a prior
 
@@ -177,17 +172,18 @@ def thresholds_from_prior(prior, point_values=[1,2,3,4,8]) -> Tuple[List[float]]
         benign_evidence_thresholds[strength_idx] = C ** -exp_val
     return pathogenic_evidence_thresholds[::-1], benign_evidence_thresholds[::-1]
 
-def assign_assay_evidence_strength(score, pathogenic_score_thresholds, benign_score_thresholds,is_inverted=False):
+def assign_assay_evidence_strength(score, pathogenic_score_thresholds, benign_score_thresholds,point_values,is_inverted=False):
+    point_values = np.abs(np.array(point_values))
     if np.isnan(score):
         return 0
-    for threshold,points in list(zip(pathogenic_score_thresholds,[1,2,3,4,8]))[::-1]:
+    for threshold,points in list(zip(pathogenic_score_thresholds,point_values))[::-1]:
         if np.isnan(threshold):
             continue
         if is_inverted and score >= threshold:
             return points
         if (not is_inverted) and score <= threshold:
             return points
-    for threshold,points in list(zip(benign_score_thresholds,[-1,-2,-3,-4,-8]))[::-1]:
+    for threshold,points in list(zip(benign_score_thresholds,-1 * point_values))[::-1]:
         if np.isnan(threshold):
             continue
         if is_inverted and score <= threshold:

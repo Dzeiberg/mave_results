@@ -2,8 +2,9 @@ import pandas as pd
 import fire
 import numpy as np
 import json
+from ast import literal_eval
 
-def load_data(data_filepath,load_replicates=False,labels=["P/LP", "B/LB", 'gnomAD', 'synonymous']):
+def load_data(data_filepath,labels=["P/LP", "B/LB", 'gnomAD', 'synonymous', 'VUS'],):
     """
     Load data from a json file.
 
@@ -22,25 +23,55 @@ def load_data(data_filepath,load_replicates=False,labels=["P/LP", "B/LB", 'gnomA
         sample_indicators: np.array, the indicators for each sample
         labels: np.array, the labels for each indicator
     """
-    data = pd.read_json(data_filepath)
-    # labels = ["P/LP", "B/LB", 'gnomAD', 'synonymous']
+    data = pd.read_csv(data_filepath).assign(labels=lambda x: x.labels.apply(literal_eval))
     sample_indicators = []
     scores = []
+    hgvs_p = data.hgvs_p.values
     for i,(_,observation) in enumerate(data.iterrows()):
         indicator = [label in observation['labels'] for label in labels]
-        if load_replicates:
-            for score in observation['scores']:
-                scores.append(score)
-                sample_indicators.append(indicator)
-        else:
-            scores.append(np.mean(observation['scores']))
-            sample_indicators.append(indicator)
+        scores.append(np.mean(observation['auth_reported_score']))
+        sample_indicators.append(indicator)
     scores = np.array(scores)
     sample_indicators = np.array(sample_indicators)
     sample_mask = sample_indicators.sum(axis=0) > 0
     labels = np.array(labels)[sample_mask]
     sample_indicators = sample_indicators[:,sample_mask]
-    return scores, sample_indicators,labels
+    author_labels = infer_author_labels(data)
+    return scores, sample_indicators,labels, author_labels,hgvs_p
+
+def infer_author_labels(data):
+    """
+    Infer the author labels from the data
+    """
+    if 'auth_reported_func_class' in data.columns and not data.auth_reported_func_class.isna().all():
+        return data.auth_reported_func_class.values
+    normal_min, normal_max, abnormal_min, abnormal_max = data.loc[:,['auth_reported_normal_min',
+                                                                             'auth_reported_normal_max',
+                                                                             'auth_reported_abnormal_min',
+                                                                             'auth_reported_abnormal_max']].values[0]
+    if not np.isnan([normal_min, abnormal_max]).any() and abnormal_max < normal_min:
+        # standard score thresholds
+        author_labels = []
+        for score in data.auth_reported_score:
+            if score >= normal_min:
+                author_labels.append('Functionally Normal')
+            elif score <= abnormal_max:
+                author_labels.append('Functionally Abnormal')
+            else:
+                author_labels.append('Indeterminate')
+    elif not np.isnan([normal_max, abnormal_min]).any() and abnormal_min > normal_max:
+        # inverted score thresholds
+        author_labels = []
+        for score in data.auth_reported_score:
+            if score <= normal_max:
+                author_labels.append('Functionally Normal')
+            elif score >= abnormal_min:
+                author_labels.append('Functionally Abnormal')
+            else:
+                author_labels.append('Indeterminate')
+    else:
+        author_labels = ['N/a']*len(data)
+    return np.array(author_labels)
 
 def load_result(result_file):
     """

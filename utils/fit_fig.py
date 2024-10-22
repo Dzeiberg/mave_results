@@ -2,11 +2,11 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from mave_calibration.skew_normal import density_utils
-
+from tqdm import tqdm
 
 def get_sample_density(X, results,sample_names):
     densities = []
-    for result in results:
+    for result in tqdm(results,leave=False):
         iter_densities = [density_utils.joint_densities(X, result.get("component_params"),
                                                         result.get("weights")[i]).sum(0) \
                           for i in range(len(sample_names))]
@@ -29,10 +29,10 @@ def fit_fig(X,S,sample_names,ax, results=None,priors=[]):
         name = sample_names[i]
         label = f"{name} (n={S[:,i].sum():,d})"
         if len(priors) and (name == "gnomAD"):
-            label += f" (median prior={np.quantile(priors,.5):.2f})"
+            label += f"\n(median prior={np.quantile(priors,.5):.2f})"
         sns.histplot(X[S[:,i]],ax=ax[i],stat='density',color=palette[i],bins=bins,label=label)
         if D is not None:
             ax[i].plot(rng, D[i].mean(0),color=palette_3[i],)
             q = np.nanquantile(D[i], [0.025, .975], axis=0)
             ax[i].fill_between(rng, q[0], q[1], alpha=.5, color=palette_2[i])
-        ax[i].legend()
+        ax[i].legend(loc='upper left')
